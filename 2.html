@@ -72,31 +72,22 @@
     /* ==============================================
        LOGO
     ============================================== */
-
     .logo-wrap {
-      width: 100%;
       text-align: center;
       margin-bottom: 24px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
     .logo-wrap img {
-      display: block;
+      max-height: 72px;
       width: auto;
-      max-width: 100%;
-      height: auto;
-      max-height: clamp(44px, 10vw, 72px);
-      object-fit: contain;
+      display: inline-block;
     }
     .logo-text {
       font-family: 'DM Serif Display', serif;
-      font-size: clamp(1.2rem, 5vw, 1.6rem);
+      font-size: 1.5rem;
       color: var(--red);
       display: none;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
+      gap: 7px;
     }
     .logo-text::after {
       content: '';
@@ -104,8 +95,8 @@
       background: var(--gold);
       border-radius: 50%;
       display: inline-block;
-      flex-shrink: 0;
     }
+
     /* ==============================================
        CARD
     ============================================== */
@@ -544,8 +535,6 @@
        RESPONSIVE — MOBILE FIRST
     ============================================== */
     @media (max-width: 640px) {
-      .logo-wrap { margin-bottom: 18px; }
-      .logo-wrap img { max-height: clamp(36px, 8vw, 56px); }
       .page  { padding: 20px 12px 52px; }
       .card  { padding: 22px 16px; border-radius: 14px; }
       h1     { font-size: 1.5rem; }
@@ -570,8 +559,6 @@
     }
 
     @media (max-width: 380px) {
-      .logo-wrap img { max-height: 38px; }
-      .logo-text { font-size: 1.1rem; }
       .card   { padding: 18px 13px; }
       h1      { font-size: 1.3rem; }
       .emo-grid { gap: 7px; }
@@ -599,11 +586,11 @@
       </div>
 
       <div class="card" style="text-align:center;">
-        <div class="eyebrow">🎯 Onboarding Intelligence Platform</div>
+        <div class="eyebrow"></div>
         <h1>Welcome to Padcare 🚀</h1>
         <p class="sub">
           Let's begin your onboarding journey and see how well you understood today's sessions.
-          This quick assessment will help us personalise your growth path.
+  
         </p>
         <button class="btn btn-primary" onclick="goTo('pg-form')">
           Begin Onboarding Journey →
@@ -634,7 +621,7 @@
       <div class="card">
         <div class="eyebrow">Step 1 of 5</div>
         <h2>Your Details</h2>
-        <p class="sub">Help us personalise your onboarding experience.</p>
+        <p class="sub">Please fill the details</p>
 
         <div class="form-group">
           <label class="fl" for="f-name">Full Name</label>
