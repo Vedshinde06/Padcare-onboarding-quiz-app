@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Padcare Onboarding Intelligence Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==============================================
+       RESET & VARIABLES
+    ============================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:        #C9161A;
+      --red-dark:   #AB0106;
+      --bg:         #FFF6EA;
+      --bg2:        #FCF8E6;
+      --gray-line:  #CFCFCF;
+      --gray-text:  #666666;
+      --peach:      #E68B7C;
+      --gold:       #EFC147;
+      --pink:       #EDA1B0;
+      --green:      #0E4B07;
+      --white:      #ffffff;
+      --shadow:     0 4px 28px rgba(201,22,26,0.08), 0 1px 6px rgba(0,0,0,0.05);
+      --r:          16px;
+      --t:          0.28s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: #1a1a1a;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ==============================================
+       FULL-SCREEN PAGE SYSTEM
+       Each .page is display:none by default.
+       Only .page.active is shown — fills viewport.
+    ============================================== */
+    #app { position: relative; width: 100%; }
+
+    .page {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+      background: var(--bg);
+      padding: 32px 16px 64px;
+    }
+    .page.active {
+      display: block;
+      animation: pageIn .36s ease both;
+    }
+
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Centred content column — max 600px on desktop */
+    .col {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ==============================================
+       LOGO
+    ============================================== */
+    .logo-wrap {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .logo-wrap img {
+      max-height: 72px;
+      width: auto;
+      display: inline-block;
+    }
+    .logo-text {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      color: var(--red);
+      display: none;
+      align-items: center;
+      gap: 7px;
+    }
+    .logo-text::after {
+      content: '';
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* ==============================================
+       CARD
+    ============================================== */
+    .card {
+      background: var(--white);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 36px;
+    }
+
+    /* ==============================================
+       TYPOGRAPHY
+    ============================================== */
+    .eyebrow {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.65rem, 5vw, 2.5rem);
+      line-height: 1.18;
+      margin-bottom: 14px;
+    }
+    h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.15rem, 4vw, 1.5rem);
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+    .sub {
+      font-size: 0.93rem;
+      color: var(--gray-text);
+      line-height: 1.65;
+      margin-bottom: 26px;
+    }
+
+    /* ==============================================
+       BUTTONS
+    ============================================== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--t);
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      width: 100%;           /* full-width by default for simplicity */
+    }
+    .btn-primary {
+      background: var(--red);
+      color: var(--white);
+      box-shadow: 0 4px 14px rgba(201,22,26,0.28);
+    }
+    .btn-primary:hover, .btn-primary:focus {
+      background: var(--red-dark);
+      box-shadow: 0 6px 20px rgba(171,1,6,0.36);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ==============================================
+       FORM ELEMENTS
+    ============================================== */
+    .form-group { margin-bottom: 18px; }
+    label.fl {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--gray-text);
+      margin-bottom: 7px;
+    }
+    input[type="text"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1.5px solid var(--gray-line);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: #1a1a1a;
+      background: var(--white);
+      outline: none;
+      transition: border-color var(--t), box-shadow var(--t);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(201,22,26,0.1);
+    }
+    .field-err { border-color: var(--red) !important; }
+    .errmsg {
+      font-size: 0.73rem;
+      color: var(--red);
+      margin-top: 5px;
+      display: none;
+    }
+    .errmsg.show { display: block; }
+    textarea { resize: vertical; min-height: 96px; }
+
+    /* Emotion grid */
+    .emo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .emo-btn {
+      padding: 12px 8px;
+      border: 1.5px solid var(--gray-line);
+      border-radius: 10px;
+      background: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--gray-text);
+      cursor: pointer;
+      text-align: center;
+      transition: all var(--t);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .emo-btn:hover { border-color: var(--red); color: var(--red); }
+    .emo-btn.on {
+      border-color: var(--red);
+      background: rgba(201,22,26,0.06);
+      color: var(--red);
+      font-weight: 600;
+    }
+
+    /* ==============================================
+       STEP DOTS
+    ============================================== */
+    .dots {
+      display: flex;
+      gap: 7px;
+      justify-content: center;
+      margin-top: 22px;
+    }
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--gray-line);
+      transition: all var(--t);
+    }
+    .dot.on { background: var(--red); transform: scale(1.35); }
+
+    /* ==============================================
+       PROGRESS BAR
+    ============================================== */
+    .prog-wrap { margin-bottom: 24px; }
+    .prog-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: var(--gray-text);
+      margin-bottom: 7px;
+    }
+    .prog-track {
+      background: var(--gray-line);
+      border-radius: 99px;
+      height: 5px;
+      overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red), var(--peach));
+      border-radius: 99px;
+      transition: width .5s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ==============================================
+       QUIZ OPTIONS
+    ============================================== */
+    .q-cat {
+      display: inline-block;
+      background: rgba(201,22,26,0.08);
+      color: var(--red);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 11px;
+      border-radius: 99px;
+      margin-bottom: 14px;
+    }
+    .q-text {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1rem, 3.5vw, 1.15rem);
+      line-height: 1.55;
+      margin-bottom: 22px;
+    }
+    .opts { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+
+    .opt {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 15px;
+      border: 1.5px solid var(--gray-line);
+      border-radius: 11px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #1a1a1a;
+      transition: all var(--t);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .opt:hover:not(.locked) { border-color: var(--red); background: rgba(201,22,26,0.04); }
+    .opt.selected { border-color: var(--red); background: rgba(201,22,26,0.06); font-weight: 600; }
+    .opt.correct  { border-color: var(--green); background: rgba(14,75,7,0.07); color: var(--green); font-weight: 600; }
+    .opt.wrong    { border-color: var(--red); background: rgba(201,22,26,0.07); color: var(--red-dark); font-weight: 600; }
+    .opt.locked   { cursor: default; }
+
+    .opt-l {
+      width: 28px; height: 28px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--gray-text);
+      transition: all var(--t);
+    }
+    .opt.selected .opt-l { background: var(--red);   color: var(--white); }
+    .opt.correct  .opt-l { background: var(--green); color: var(--white); }
+    .opt.wrong    .opt-l { background: var(--red);   color: var(--white); }
+
+    /* ==============================================
+       XP POP
+    ============================================== */
+    #xpPop {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%) scale(0.6);
+      background: var(--gold);
+      color: #4a3500;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.55rem;
+      padding: 12px 26px;
+      border-radius: 14px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.13);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 9999;
+      transition: opacity .15s, transform .15s;
+    }
+    #xpPop.show {
+      opacity: 1;
+      transform: translate(-50%,-65%) scale(1);
+    }
+
+    /* ==============================================
+       RESULTS
+    ============================================== */
+    .score-wrap { text-align: center; margin-bottom: 22px; }
+    .score-ring {
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      background: conic-gradient(var(--red) 0deg, var(--gray-line) 0deg);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+      transition: background 1s ease;
+    }
+    .score-inner {
+      width: 100px; height: 100px;
+      background: var(--white);
+      border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .score-num { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--red); line-height: 1; }
+    .score-of  { font-size: 0.66rem; color: var(--gray-text); font-weight: 600; }
+    .score-pct { font-size: 0.86rem; color: var(--gray-text); }
+
+    .badge-box {
+      background: var(--bg);
+      border-radius: 13px;
+      padding: 22px 18px;
+      text-align: center;
+      margin-bottom: 22px;
+    }
+    .badge-icon { font-size: 2.2rem; display: block; margin-bottom: 7px; }
+    .badge-name { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
+    .badge-sub  { font-size: 0.83rem; color: var(--gray-text); margin-top: 5px; }
+
+    .cat-tbl { width: 100%; border-collapse: collapse; }
+    .cat-tbl th {
+      text-align: left;
+      font-size: 0.66rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--gray-text);
+      padding: 8px 10px;
+      border-bottom: 1.5px solid var(--gray-line);
+    }
+    .cat-tbl td { padding: 10px 10px; font-size: 0.83rem; border-bottom: 1px solid var(--bg); }
+
+    .pill { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 0.7rem; font-weight: 700; }
+    .p-g  { background: rgba(14,75,7,0.1);    color: var(--green); }
+    .p-y  { background: rgba(239,193,71,0.18); color: #7a5500; }
+    .p-r  { background: rgba(201,22,26,0.1);   color: var(--red); }
+
+    .mbar { display: inline-block; vertical-align: middle; margin-left: 8px; width: 70px; height: 5px; background: var(--gray-line); border-radius: 99px; overflow: hidden; }
+    .mfil { height: 100%; background: var(--red); border-radius: 99px; }
+
+    .cf-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 9998; overflow: hidden; }
+    .cf { position: absolute; border-radius: 2px; animation: cfFall linear forwards; }
+    @keyframes cfFall {
+      from { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      to   { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ==============================================
+       FEEDBACK
+    ============================================== */
+    .slider-row { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+    input[type="range"] {
+      flex: 1; -webkit-appearance: none; appearance: none;
+      height: 5px; border-radius: 99px;
+      background: var(--gray-line); outline: none; cursor: pointer;
+      border: none; padding: 0;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--red); box-shadow: 0 2px 8px rgba(201,22,26,0.3); cursor: pointer;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--red); border: none; cursor: pointer;
+    }
+    .slide-val { font-family: 'DM Serif Display', serif; font-size: 1.15rem; color: var(--red); min-width: 24px; text-align: center; }
+
+    .tog-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tog {
+      padding: 10px 22px;
+      border: 1.5px solid var(--gray-line);
+      border-radius: 10px; background: var(--white);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; color: var(--gray-text); transition: all var(--t);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tog.on { border-color: var(--red); background: var(--red); color: var(--white); }
+
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.35);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin .65s linear infinite;
+      display: none; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .success-box { text-align: center; padding: 36px 20px; }
+    .success-icon  { font-size: 2.8rem; display: block; margin-bottom: 14px; }
+    .success-title { font-family: 'DM Serif Display', serif; font-size: 1.45rem; margin-bottom: 10px; }
+    .success-sub   { font-size: 0.9rem; color: var(--gray-text); line-height: 1.65; }
+
+    hr.div { border: none; border-top: 1px solid var(--gray-line); margin: 22px 0; }
+
+    /* ==============================================
+       ADMIN OVERLAY
+    ============================================== */
+    #adminOverlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.52);
+      z-index: 10000;
+      overflow-y: auto;
+      padding: 32px 14px;
+    }
+    #adminOverlay.open {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      animation: pageIn .3s ease both;
+    }
+    .admin-box {
+      background: var(--white);
+      border-radius: 18px;
+      padding: 32px;
+      width: 100%; max-width: 780px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+    }
+    .admin-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      gap: 12px;
+    }
+    .admin-title { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--red); }
+    .admin-sub   { font-size: 0.76rem; color: var(--gray-text); margin-top: 3px; }
+    .xbtn {
+      background: var(--bg); border: none; border-radius: 9px;
+      width: 36px; height: 36px; font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gray-text); transition: all var(--t); flex-shrink: 0;
+    }
+    .xbtn:hover { background: var(--red); color: var(--white); }
+    .tbl-wrap  { overflow-x: auto; }
+    .adm-tbl   { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .adm-tbl th {
+      background: var(--bg); text-align: left;
+      padding: 9px 12px; font-size: 0.66rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--gray-text); border-bottom: 2px solid var(--gray-line); white-space: nowrap;
+    }
+    .adm-tbl td { padding: 11px 12px; border-bottom: 1px solid var(--bg); vertical-align: top; }
+    .admin-empty { text-align: center; padding: 36px; color: var(--gray-text); font-size: 0.9rem; }
+
+    /* ==============================================
+       RESPONSIVE — MOBILE FIRST
+    ============================================== */
+    @media (max-width: 640px) {
+      .page  { padding: 20px 12px 52px; }
+      .card  { padding: 22px 16px; border-radius: 14px; }
+      h1     { font-size: 1.5rem; }
+      h2     { font-size: 1.12rem; }
+      .sub   { font-size: 0.87rem; }
+      .btn   { padding: 13px 20px; font-size: 0.88rem; }
+
+      .q-text    { font-size: 0.96rem; }
+      .opt       { padding: 11px 12px; font-size: 0.86rem; gap: 10px; }
+      .opt-l     { width: 24px; height: 24px; font-size: 0.68rem; }
+
+      .score-ring  { width: 112px; height: 112px; }
+      .score-inner { width: 86px; height: 86px; }
+      .score-num   { font-size: 1.55rem; }
+
+      .cat-tbl th, .cat-tbl td { padding: 7px 8px; font-size: 0.77rem; }
+      .mbar { width: 48px; }
+
+      .admin-box  { padding: 20px 13px; }
+      .adm-tbl th, .adm-tbl td { padding: 8px 9px; font-size: 0.74rem; }
+      .tog { padding: 9px 16px; font-size: 0.84rem; }
+    }
+
+    @media (max-width: 380px) {
+      .card   { padding: 18px 13px; }
+      h1      { font-size: 1.3rem; }
+      .emo-grid { gap: 7px; }
+      .emo-btn  { font-size: 0.78rem; padding: 9px 5px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!-- XP pop-up -->
+  <div id="xpPop">+10 XP ✨</div>
+  <!-- Confetti container -->
+  <div class="cf-wrap" id="cfwrap"></div>
+
+  <!-- ============================================
+       PAGE 1 — WELCOME
+  ============================================ -->
+  <div id="pg-welcome" class="page active">
+    <div class="col">
+      <div class="logo-wrap">
+        <img src="logo.png" alt="Padcare Logo"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
+        <span class="logo-text">Padcare</span>
+      </div>
+
+      <div class="card" style="text-align:center;">
+        <div class="eyebrow"></div>
+        <h1>Welcome to Padcare 🚀</h1>
+        <p class="sub">
+          Let's begin your onboarding journey and see how well you understood today's sessions.
+  
+        </p>
+        <button class="btn btn-primary" onclick="goTo('pg-form')">
+          Begin Onboarding Journey →
+        </button>
+      </div>
+
+      <div class="dots">
+        <div class="dot on"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       PAGE 2 — EMPLOYEE FORM
+  ============================================ -->
+  <div id="pg-form" class="page">
+    <div class="col">
+      <div class="logo-wrap">
+        <img src="logo.png" alt="Padcare Logo"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
+        <span class="logo-text">Padcare</span>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">Step 1 of 5</div>
+        <h2>Your Details</h2>
+        <p class="sub">Please fill the details</p>
+
+        <div class="form-group">
+          <label class="fl" for="f-name">Full Name</label>
+          <input type="text" id="f-name" placeholder="e.g. Priya Sharma" autocomplete="name">
+          <div class="errmsg" id="e-name">Please enter your full name.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="fl" for="f-dept">Department</label>
+          <select id="f-dept">
+            <option value="" disabled selected>Select your department</option>
+            <option>HR</option>
+            <option>Sales</option>
+            <option>Operations</option>
+            <option>Tech</option>
+          </select>
+          <div class="errmsg" id="e-dept">Please select your department.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="fl" for="f-role">Role / Designation</label>
+          <input type="text" id="f-role" placeholder="e.g. Business Development Executive">
+          <div class="errmsg" id="e-role">Please enter your role.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="fl" for="f-doj">Date of Joining</label>
+          <input type="date" id="f-doj">
+          <div class="errmsg" id="e-doj">Please select your joining date.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="fl">How are you feeling right now?</label>
+          <div class="emo-grid">
+            <button class="emo-btn" data-val="Nervous"     onclick="pickEmo(this)">😬 Nervous</button>
+            <button class="emo-btn" data-val="Confident"   onclick="pickEmo(this)">😊 Confident</button>
+            <button class="emo-btn" data-val="Excited"     onclick="pickEmo(this)">🚀 Excited</button>
+            <button class="emo-btn" data-val="Overwhelmed" onclick="pickEmo(this)">🤔 Overwhelmed</button>
+          </div>
+          <div class="errmsg" id="e-emo">Please select how you are feeling.</div>
+        </div>
+
+        <button class="btn btn-primary" style="margin-top:8px;" onclick="submitForm()">
+          Start Quiz →
+        </button>
+      </div>
+
+      <div class="dots">
+        <div class="dot on"></div>
+        <div class="dot on"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       PAGE 3 — QUIZ
+  ============================================ -->
+  <div id="pg-quiz" class="page">
+    <div class="col">
+      <div class="logo-wrap">
+        <img src="logo.png" alt="Padcare Logo"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
+        <span class="logo-text">Padcare</span>
+      </div>
+
+      <div class="card">
+        <div class="prog-wrap">
+          <div class="prog-meta">
+            <span id="prog-lbl">Question 1 of 10</span>
+            <span id="prog-xp">0 / 100 XP</span>
+          </div>
+          <div class="prog-track">
+            <div class="prog-fill" id="prog-fill" style="width:10%;"></div>
+          </div>
+        </div>
+
+        <div class="q-cat"  id="q-cat">Category</div>
+        <div class="q-text" id="q-text">Loading...</div>
+        <ul  class="opts"   id="q-opts"></ul>
+
+        <button class="btn btn-primary" id="btn-next" disabled onclick="nextQ()">
+          Next Question →
+        </button>
+      </div>
+
+      <div class="dots">
+        <div class="dot on"></div>
+        <div class="dot on"></div>
+        <div class="dot on"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       PAGE 4 — RESULTS
+  ============================================ -->
+  <div id="pg-results" class="page">
+    <div class="col">
+      <div class="logo-wrap">
+        <img src="logo.png" alt="Padcare Logo"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
+        <span class="logo-text">Padcare</span>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow" style="text-align:center;">Your Results</div>
+
+        <div class="score-wrap">
+          <div class="score-ring" id="score-ring">
+            <div class="score-inner">
+              <div class="score-num" id="score-num">0</div>
+              <div class="score-of">out of 100</div>
+            </div>
+          </div>
+          <div class="score-pct" id="score-pct">0% Overall</div>
+        </div>
+
+        <div class="badge-box">
+          <span class="badge-icon" id="b-icon">🏆</span>
+          <div class="badge-name"  id="b-name">Culture Champion</div>
+          <div class="badge-sub"   id="b-sub">Outstanding!</div>
+        </div>
+
+        <p style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--gray-text);margin-bottom:10px;">Category Performance</p>
+        <table class="cat-tbl">
+          <thead><tr><th>Category</th><th>Score</th><th>Result</th></tr></thead>
+          <tbody id="cat-body"></tbody>
+        </table>
+
+        <hr class="div">
+        <button class="btn btn-primary" onclick="goTo('pg-feedback')">
+          Share Feedback →
+        </button>
+      </div>
+
+      <div class="dots">
+        <div class="dot on"></div>
+        <div class="dot on"></div>
+        <div class="dot on"></div>
+        <div class="dot on"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       PAGE 5 — FEEDBACK
+  ============================================ -->
+  <div id="pg-feedback" class="page">
+    <div class="col">
+      <div class="logo-wrap">
+        <img src="logo.png" alt="Padcare Logo"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
+        <span class="logo-text">Padcare</span>
+      </div>
+
+      <!-- Feedback form -->
+      <div class="card" id="fb-card">
+        <div class="eyebrow">Step 5 of 5</div>
+        <h2>Your Feedback</h2>
+        <p class="sub">Help us make onboarding better for everyone.</p>
+
+        <div class="form-group">
+          <label class="fl">How confident do you feel after onboarding? (1–10)</label>
+          <div class="slider-row">
+            <span style="font-size:0.78rem;color:var(--gray-text);">1</span>
+            <input type="range" id="sl-conf" min="1" max="10" value="5"
+              oninput="document.getElementById('sl-val').textContent=this.value">
+            <span style="font-size:0.78rem;color:var(--gray-text);">10</span>
+            <div class="slide-val" id="sl-val">5</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="fl">Was the onboarding session clear and structured?</label>
+          <div class="tog-row">
+            <button class="tog" data-val="Yes" onclick="pickClear(this)">✅ Yes</button>
+            <button class="tog" data-val="No"  onclick="pickClear(this)">❌ No</button>
+          </div>
+          <div class="errmsg" id="e-clear">Please select an option.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="fl">Any suggestions or improvements?</label>
+          <textarea id="f-sug" placeholder="Share your thoughts, ideas, or concerns..."></textarea>
+        </div>
+
+        <button class="btn btn-primary" id="btn-sub" onclick="submitFeedback()">
+          <span id="sub-lbl">Submit &amp; Finish</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+      </div>
+
+      <!-- Success (hidden initially) -->
+      <div class="card success-box" id="fb-ok" style="display:none;">
+        <span class="success-icon">🎉</span>
+        <div class="success-title">You're All Set!</div>
+        <p class="success-sub">
+          Your onboarding assessment has been submitted successfully.<br>
+          Our HR team will review your responses. Welcome to the Padcare family! 💚
+        </p>
+      </div>
+
+      <div class="dots">
+        <div class="dot on"></div>
+        <div class="dot on"></div>
+        <div class="dot on"></div>
+        <div class="dot on"></div>
+        <div class="dot on"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /#app -->
+
+<!-- ============================================
+     ADMIN OVERLAY  (Ctrl + Shift + H)
+============================================ -->
+<div id="adminOverlay">
+  <div class="admin-box">
+    <div class="admin-head">
+      <div>
+        <div class="admin-title">⚙️ HR Dashboard</div>
+        <div class="admin-sub">Padcare Onboarding Intelligence — Session Data</div>
+      </div>
+      <button class="xbtn" onclick="closeAdmin()">✕</button>
+    </div>
+    <div class="tbl-wrap" id="admin-content">
+      <div class="admin-empty">No session data yet. Complete the quiz to see results here.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     JAVASCRIPT
+============================================ -->
+<script>
+  /* ------------------------------------------
+     GOOGLE SHEETS URL
+     Replace the placeholder below with your
+     Google Apps Script Web App URL.
+     (Full setup steps are in the HTML comment
+     at the very bottom of this file.)
+  ------------------------------------------ */
+  const SHEET_URL = "https://script.google.com/macros/s/AKfycbxWbVEXLDSSU-5S4u1904YfqjyWqhlfoC_ynX6OOaVReqI9fEMo66SqWAwZ01tnE0eA1Q/exec";
+
+  /* ------------------------------------------
+     QUIZ QUESTIONS  —  HR: edit freely below
+     correctIndex is 0-based:
+       0 = first option, 1 = second, etc.
+  ------------------------------------------ */
+  const QUESTIONS = [
+    {
+      question: "What is Padcare's core mission and company vision?",
+      options: [
+        "Maximise profits for shareholders",
+        "Provide hygienic menstrual waste management and promote dignity for women",
+        "Sell sanitary products in bulk to hospitals",
+        "Offer corporate wellness packages"
+      ],
+      correctIndex: 1,
+      category: "Company Vision"
+    },
+    {
+      question: "Which best describes Padcare's core values?",
+      options: [
+        "Speed, Secrecy, and Solo Work",
+        "Integrity, Empathy, Sustainability, and Inclusivity",
+        "Revenue First, Always",
+        "Compliance and Cost Efficiency"
+      ],
+      correctIndex: 1,
+      category: "Company Values"
+    },
+    {
+      question: "How many casual leaves is an employee entitled to per year at Padcare?",
+      options: ["5 days", "8 days", "12 days", "15 days"],
+      correctIndex: 2,
+      category: "Leave Policy"
+    },
+    {
+      question: "What is the official check-in time for Padcare employees?",
+      options: ["9:00 AM", "9:30 AM", "10:00 AM", "8:30 AM"],
+      correctIndex: 1,
+      category: "Attendance Policy"
+    },
+    {
+      question: "Under the POSH policy, which statement is correct?",
+      options: [
+        "Only female employees can file a POSH complaint",
+        "Complaints must be made within 1 year of the incident",
+        "Only physical harassment is covered under POSH",
+        "The Internal Committee has 60 days to investigate"
+      ],
+      correctIndex: 1,
+      category: "POSH Policy"
+    },
+    {
+      question: "Why is following SOPs critical at Padcare?",
+      options: [
+        "To limit employee creativity",
+        "To add unnecessary bureaucracy",
+        "To ensure consistency, safety, and quality across all operations",
+        "Only because clients demand it"
+      ],
+      correctIndex: 2,
+      category: "SOP Importance"
+    },
+    {
+      question: "If you cannot resolve a concern with your direct manager, who do you escalate to first?",
+      options: [
+        "The CEO directly",
+        "HR Business Partner / HR Head",
+        "A co-worker for advice",
+        "Post anonymously on social media"
+      ],
+      correctIndex: 1,
+      category: "Escalation Hierarchy"
+    },
+    {
+      question: "Padcare rebranded as 'Rebirth by Padcare.' What does this primarily signify?",
+      options: [
+        "A change of core business to consumer retail",
+        "A refreshed commitment to sustainability, dignity, and expanding impact",
+        "A merger with a competitor",
+        "Rebranding to attract foreign investment"
+      ],
+      correctIndex: 1,
+      category: "Rebirth Brand"
+    },
+    {
+      question: "What does effective collaboration at Padcare look like?",
+      options: [
+        "Working in silos and informing others only at the end",
+        "Completing tasks faster by skipping team discussions",
+        "Proactively sharing updates, seeking feedback, and supporting teammates",
+        "Delegating all responsibilities to senior team members"
+      ],
+      correctIndex: 2,
+      category: "Collaboration Culture"
+    },
+    {
+      question: "Which mindset will help you grow fastest at Padcare?",
+      options: [
+        "Wait for instructions before taking any initiative",
+        "Observe others and copy their approach",
+        "Ask questions, take ownership, and embrace continuous learning",
+        "Focus only on your specific job description"
+      ],
+      correctIndex: 2,
+      category: "Emotional Confidence"
+    }
+  ];
+
+  /* ------------------------------------------
+     APP STATE
+  ------------------------------------------ */
+  const S = {
+    name:'', dept:'', role:'', doj:'', emotion:'',
+    answers:[], score:0,
+    confidence:5, clear:'', suggestions:'', ts:''
+  };
+  let curQ    = 0;
+  let answered= false;
+  let emo     = null;
+  let clr     = null;
+
+  /* ------------------------------------------
+     PAGE NAVIGATION
+     Hides all pages, shows the target,
+     and scrolls the window back to the top
+     so it feels like a fresh page load.
+  ------------------------------------------ */
+  function goTo(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const pg = document.getElementById(pageId);
+    if (!pg) return;
+    pg.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  /* ------------------------------------------
+     EMOTION PICKER
+  ------------------------------------------ */
+  function pickEmo(btn) {
+    document.querySelectorAll('.emo-btn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    emo = btn.dataset.val;
+    document.getElementById('e-emo').classList.remove('show');
+  }
+
+  /* ------------------------------------------
+     CLEAR PICKER
+  ------------------------------------------ */
+  function pickClear(btn) {
+    document.querySelectorAll('.tog').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    clr = btn.dataset.val;
+    document.getElementById('e-clear').classList.remove('show');
+  }
+
+  /* ------------------------------------------
+     FORM VALIDATION
+  ------------------------------------------ */
+  function chk(fieldId, errId, bad) {
+    const f = document.getElementById(fieldId);
+    const e = document.getElementById(errId);
+    if (bad) { f.classList.add('field-err'); e.classList.add('show'); return false; }
+    f.classList.remove('field-err'); e.classList.remove('show'); return true;
+  }
+
+  function submitForm() {
+    const name = document.getElementById('f-name').value.trim();
+    const dept = document.getElementById('f-dept').value;
+    const role = document.getElementById('f-role').value.trim();
+    const doj  = document.getElementById('f-doj').value;
+
+    let ok = true;
+    ok = chk('f-name','e-name',!name) && ok;
+    ok = chk('f-dept','e-dept',!dept) && ok;
+    ok = chk('f-role','e-role',!role) && ok;
+    ok = chk('f-doj', 'e-doj', !doj)  && ok;
+
+    if (!emo) { document.getElementById('e-emo').classList.add('show'); ok = false; }
+
+    if (!ok) return;
+
+    S.name = name; S.dept = dept; S.role = role; S.doj = doj; S.emotion = emo;
+    S.answers = []; S.score = 0;
+    curQ = 0; answered = false;
+
+    goTo('pg-quiz');
+    renderQ();
+  }
+
+  /* ------------------------------------------
+     QUIZ RENDER
+  ------------------------------------------ */
+  function renderQ() {
+    const q = QUESTIONS[curQ];
+    answered = false;
+
+    const pct = ((curQ + 1) / QUESTIONS.length) * 100;
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-lbl').textContent  = `Question ${curQ + 1} of ${QUESTIONS.length}`;
+    document.getElementById('prog-xp').textContent   = `${S.score} / 100 XP`;
+
+    document.getElementById('q-cat').textContent  = q.category;
+    document.getElementById('q-text').textContent = q.question;
+
+    const ul = document.getElementById('q-opts');
+    ul.innerHTML = '';
+    ['A','B','C','D'].forEach((ltr, i) => {
+      const li = document.createElement('li');
+      li.className = 'opt';
+      li.innerHTML = `<span class="opt-l">${ltr}</span><span>${q.options[i]}</span>`;
+      li.addEventListener('click', () => pickOpt(i, q.correctIndex));
+      ul.appendChild(li);
+    });
+
+    const nb = document.getElementById('btn-next');
+    nb.disabled    = true;
+    nb.textContent = curQ === QUESTIONS.length - 1 ? 'See My Results 🎉' : 'Next Question →';
+  }
+
+  /* ------------------------------------------
+     OPTION SELECTION
+  ------------------------------------------ */
+  function pickOpt(chosen, correct) {
+    if (answered) return;
+    answered = true;
+
+    document.querySelectorAll('.opt').forEach((li, i) => {
+      li.classList.add('locked');
+      if (i === correct)                           li.classList.add('correct');
+      else if (i === chosen && chosen !== correct) li.classList.add('wrong');
+    });
+    document.querySelectorAll('.opt')[chosen].classList.add('selected');
+
+    const right = chosen === correct;
+    S.answers.push({ qi: curQ, correct: right, cat: QUESTIONS[curQ].category });
+
+    if (right) {
+      S.score += 10;
+      document.getElementById('prog-xp').textContent = `${S.score} / 100 XP`;
+      xpPop();
+    }
+    document.getElementById('btn-next').disabled = false;
+  }
+
+  /* ------------------------------------------
+     NEXT QUESTION
+  ------------------------------------------ */
+  function nextQ() {
+    curQ++;
+    if (curQ >= QUESTIONS.length) {
+      buildResults();
+      goTo('pg-results');
+    } else {
+      goTo('pg-quiz');
+      renderQ();
+    }
+  }
+
+  /* ------------------------------------------
+     XP ANIMATION
+  ------------------------------------------ */
+  function xpPop() {
+    const el = document.getElementById('xpPop');
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 900);
+  }
+
+  /* ------------------------------------------
+     BUILD RESULTS PAGE
+  ------------------------------------------ */
+  function buildResults() {
+    const s = S.score;
+    document.getElementById('score-num').textContent = s;
+    document.getElementById('score-pct').textContent = s + '% Overall';
+
+    setTimeout(() => {
+      document.getElementById('score-ring').style.background =
+        `conic-gradient(var(--red) ${s*3.6}deg, var(--gray-line) ${s*3.6}deg)`;
+    }, 80);
+
+    let icon, name, sub;
+    if      (s >= 90) { icon='🏆'; name='Culture Champion'; sub='Outstanding! You are a Padcare legend in the making.'; }
+    else if (s >= 75) { icon='⭐'; name='Policy Pro';        sub='Great work! You clearly paid attention during the sessions.'; }
+    else if (s >= 50) { icon='👍'; name='Learning Explorer'; sub='Good start! A little review will get you to the top.'; }
+    else              { icon='📘'; name='Needs Review';       sub="No worries! Revisit the materials and you'll ace it next time."; }
+
+    document.getElementById('b-icon').textContent = icon;
+    document.getElementById('b-name').textContent = name;
+    document.getElementById('b-sub').textContent  = sub;
+
+    /* Category performance */
+    const cats = {};
+    S.answers.forEach(a => {
+      if (!cats[a.cat]) cats[a.cat] = { c:0, t:0 };
+      cats[a.cat].t++;
+      if (a.correct) cats[a.cat].c++;
+    });
+    const tbody = document.getElementById('cat-body');
+    tbody.innerHTML = '';
+    Object.entries(cats).forEach(([cat, d]) => {
+      const p   = Math.round((d.c/d.t)*100);
+      const cls = p >= 75 ? 'p-g' : p >= 50 ? 'p-y' : 'p-r';
+      const tr  = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${cat}</td>
+        <td>${d.c}/${d.t}</td>
+        <td>
+          <span class="pill ${cls}">${p}%</span>
+          <span class="mbar"><span class="mfil" style="width:${p}%"></span></span>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+
+    if (s > 80) launchConfetti();
+  }
+
+  /* ------------------------------------------
+     CONFETTI
+  ------------------------------------------ */
+  function launchConfetti() {
+    const w = document.getElementById('cfwrap');
+    w.innerHTML = '';
+    const cols = ['#C9161A','#EFC147','#EDA1B0','#E68B7C','#0E4B07'];
+    for (let i = 0; i < 70; i++) {
+      const d = document.createElement('div');
+      d.className = 'cf';
+      const sz = 6 + Math.random()*7;
+      d.style.cssText = `left:${Math.random()*100}%;width:${sz}px;height:${sz}px;
+        background:${cols[Math.floor(Math.random()*cols.length)]};
+        animation-duration:${1.8+Math.random()*2}s;
+        animation-delay:${Math.random()*0.8}s;
+        border-radius:${Math.random()>.5?'50%':'2px'};`;
+      w.appendChild(d);
+    }
+    setTimeout(() => w.innerHTML = '', 4000);
+  }
+
+  /* ------------------------------------------
+     FEEDBACK SUBMIT
+  ------------------------------------------ */
+  async function submitFeedback() {
+    if (!clr) { document.getElementById('e-clear').classList.add('show'); return; }
+
+    S.confidence  = parseInt(document.getElementById('sl-conf').value);
+    S.clear       = clr;
+    S.suggestions = document.getElementById('f-sug').value.trim();
+    S.ts          = new Date().toISOString();
+
+    /* Loading state */
+    const btn     = document.getElementById('btn-sub');
+    const lbl     = document.getElementById('sub-lbl');
+    const spinner = document.getElementById('spinner');
+    btn.disabled  = true;
+    lbl.textContent = 'Submitting…';
+    spinner.style.display = 'inline-block';
+
+    await sendToSheets();
+
+    /* Save for admin panel */
+    const badge = S.score>=90?'🏆 Culture Champion':S.score>=75?'⭐ Policy Pro':S.score>=50?'👍 Learning Explorer':'📘 Needs Review';
+    sessionStorage.setItem('padcare', JSON.stringify({
+      name:S.name, department:S.dept, role:S.role, doj:S.doj,
+      emotion:S.emotion, score:S.score, badge,
+      confidence:S.confidence, clear:S.clear,
+      suggestions:S.suggestions, timestamp:S.ts
+    }));
+
+    /* Show success */
+    document.getElementById('fb-card').style.display = 'none';
+    document.getElementById('fb-ok').style.display   = 'block';
+  }
+
+  /* ------------------------------------------
+     GOOGLE SHEETS POST
+  ------------------------------------------ */
+  async function sendToSheets() {
+    try {
+      await fetch(SHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: S.name, department: S.dept, role: S.role, doj: S.doj,
+          emotion: S.emotion, totalScore: S.score, percentage: S.score,
+          confidence: S.confidence, onboardingClear: S.clear,
+          suggestions: S.suggestions, timestamp: S.ts
+        })
+      });
+    } catch(err) {
+      console.warn('Sheet note:', err);
+    }
+  }
+
+  /* ------------------------------------------
+     ADMIN DASHBOARD
+  ------------------------------------------ */
+  function openAdmin() {
+    const raw = sessionStorage.getItem('padcare');
+    const box = document.getElementById('admin-content');
+    if (!raw) {
+      box.innerHTML = '<div class="admin-empty">No data yet. Complete the quiz first.</div>';
+    } else {
+      const d   = JSON.parse(raw);
+      const cls = d.score>=75?'p-g':d.score>=50?'p-y':'p-r';
+      box.innerHTML = `
+        <table class="adm-tbl">
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Name</strong></td><td>${d.name}</td></tr>
+            <tr><td><strong>Department</strong></td><td>${d.department}</td></tr>
+            <tr><td><strong>Role</strong></td><td>${d.role}</td></tr>
+            <tr><td><strong>Date of Joining</strong></td><td>${d.doj}</td></tr>
+            <tr><td><strong>Emotional State</strong></td><td>${d.emotion}</td></tr>
+            <tr><td><strong>Total Score</strong></td><td><span class="pill ${cls}">${d.score} / 100</span></td></tr>
+            <tr><td><strong>Percentage</strong></td><td>${d.score}%</td></tr>
+            <tr><td><strong>Badge</strong></td><td>${d.badge}</td></tr>
+            <tr><td><strong>Confidence (post)</strong></td><td>${d.confidence} / 10</td></tr>
+            <tr><td><strong>Onboarding Clear?</strong></td><td>${d.clear}</td></tr>
+            <tr><td><strong>Suggestions</strong></td><td>${d.suggestions||'<em style="color:#ccc">None</em>'}</td></tr>
+            <tr><td><strong>Submitted At</strong></td><td>${new Date(d.timestamp).toLocaleString()}</td></tr>
+          </tbody>
+        </table>`;
+    }
+    document.getElementById('adminOverlay').classList.add('open');
+  }
+
+  function closeAdmin() {
+    document.getElementById('adminOverlay').classList.remove('open');
+  }
+
+  /* Ctrl + Shift + H */
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'H') {
+      e.preventDefault();
+      document.getElementById('adminOverlay').classList.contains('open') ? closeAdmin() : openAdmin();
+    }
+  });
+
+  /* Close on backdrop click */
+  document.getElementById('adminOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeAdmin();
+  });
+</script>
+
+<!--
+=======================================================================
+  GOOGLE SHEETS INTEGRATION — COMPLETE SETUP GUIDE
+=======================================================================
+
+STEP 1 — Create the Google Sheet
+─────────────────────────────────
+1. Go to https://sheets.google.com
+2. Create a new spreadsheet and name it:  Padcare Onboarding Data
+3. In Row 1 (headers), type these column names — one per cell:
+   A: Timestamp
+   B: Name
+   C: Department
+   D: Role
+   E: Date of Joining
+   F: Emotional State
+   G: Total Score
+   H: Percentage
+   I: Onboarding Clear
+   J: Confidence
+   K: Suggestions
+
+STEP 2 — Open Apps Script
+───────────────────────────
+1. Inside your Google Sheet, click:
+   Extensions  →  Apps Script
+2. Delete ALL existing code in the editor window.
+3. Paste this code exactly:
+
+─── COPY FROM HERE ───────────────────────────────────────────────────
+
+function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data  = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      data.timestamp,
+      data.name,
+      data.department,
+      data.role,
+      data.doj,
+      data.emotion,
+      data.totalScore,
+      data.percentage,
+      data.onboardingClear,
+      data.confidence,
+      data.suggestions
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: "success" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: "error", msg: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+─── COPY TO HERE ─────────────────────────────────────────────────────
+
+4. Click the Save icon (💾) or press Ctrl+S.
+
+STEP 3 — Deploy as Web App
+────────────────────────────
+1. Click "Deploy" (top right)  →  "New deployment"
+2. Click the gear icon ⚙ next to "Select type"  →  choose "Web app"
+3. Fill in the settings:
+   · Description:   Padcare Onboarding
+   · Execute as:    Me  (your Google account)
+   · Who has access: Anyone
+4. Click "Deploy"
+5. You may be asked to authorise — click "Allow"
+6. COPY the Web App URL shown — it looks like:
+   https://script.google.com/macros/s/XXXXXXXXXXXXXXXX/exec
+
+STEP 4 — Paste URL into this file
+───────────────────────────────────
+1. Open this HTML file in a text editor (VS Code, Notepad, etc.)
+2. Find this line near the top of the <script> section:
+     const SHEET_URL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE";
+3. Replace the placeholder with your copied URL:
+     const SHEET_URL = "https://script.google.com/macros/s/XXXXXXXX/exec";
+4. Save the file.
+
+STEP 5 — Test it
+─────────────────
+1. Open the HTML file in a browser.
+2. Complete the full quiz and feedback form.
+3. Click "Submit & Finish".
+4. Open your Google Sheet — a new row of data should appear.
+
+IMPORTANT NOTES:
+• The fetch() call uses mode:'no-cors' which is required for
+  Google Apps Script. You won't see a response in the browser
+  console, but data IS written if the URL is correct.
+• If you re-deploy the script (e.g. after editing), always
+  copy the NEW URL and update SHEET_URL in this file.
+• The HR Dashboard (Ctrl+Shift+H) shows the most recent session
+  stored in browser memory — it does NOT read from Google Sheets.
+
+=======================================================================
+-->
+
+</body>
+</html>
