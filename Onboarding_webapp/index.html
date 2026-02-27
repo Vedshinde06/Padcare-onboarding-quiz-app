@@ -49,7 +49,7 @@
     ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { scroll-behavior: smooth; font-size: 16px; }
+    html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; }
 
     body {
       font-family: 'DM Sans', sans-serif;
@@ -58,6 +58,9 @@
       color: var(--text-dark);
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      overflow-y: auto;
+      max-width: 100%;
+      width: 100%;
     }
 
     /* Subtle texture overlay */
@@ -75,7 +78,7 @@
     /* ============================================================
        SCREEN SYSTEM
     ============================================================ */
-    #app { position: relative; z-index: 1; }
+    #app { position: relative; z-index: 1; width: 100%; }
 
     .screen {
       display: none;
@@ -101,29 +104,47 @@
     ============================================================ */
     .logo-area {
       text-align: center;
-      margin-bottom: 24px;
-      padding: 0 8px;
+      margin-bottom: 20px;
+      width: 100%;
+      overflow: hidden;
+      padding: 0 16px;
+      box-sizing: border-box;
     }
     .logo-area img {
       display: block;
       margin: 0 auto;
-      max-height: clamp(44px, 11vw, 80px);
+      /* Hard cap: never wider than the available column, never taller than 60px */
+      max-width: 160px;
+      max-height: 56px;
       width: auto;
-      max-width: 100%;
+      height: auto;
       object-fit: contain;
+      object-position: center;
+    }
+    @media (max-width: 480px) {
+      .logo-area img {
+        max-width: 130px;
+        max-height: 46px;
+      }
+    }
+    @media (max-width: 360px) {
+      .logo-area img {
+        max-width: 110px;
+        max-height: 40px;
+      }
     }
     /* Fallback text logo if image fails */
     .logo-fallback {
       display: none;
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.3rem, 5vw, 1.8rem);
+      font-size: clamp(1.1rem, 5vw, 1.6rem);
       font-weight: 900;
       color: var(--red);
       letter-spacing: -0.5px;
     }
     .logo-dot {
       display: inline-block;
-      width: 10px; height: 10px;
+      width: 8px; height: 8px;
       background: var(--gold);
       border-radius: 50%;
       vertical-align: middle;
@@ -1213,8 +1234,9 @@
 
       .btn           { padding: 13px 18px; font-size: 0.86rem; border-radius: 10px; }
 
-      /* Logo tighter on mobile */
-      .logo-area     { margin-bottom: 16px; }
+      /* Logo — strict viewport-relative cap on small screens */
+      .logo-area     { margin-bottom: 16px; padding: 0 12px; }
+      .logo-area img { max-width: min(130px, calc(100vw - 64px)); max-height: 44px; }
 
       /* HUD — shrink aggressively */
       .hud           { padding: 10px 12px; gap: 6px; border-radius: 12px; }
@@ -1377,7 +1399,7 @@
     <div class="col">
       <!-- Logo -->
       <div class="logo-area">
-        <img src="logo.png" alt="Padcare Logo"
+        <img src="logo.png" alt="Padcare Logo" style="display:block;margin:0 auto;max-width:160px;max-height:56px;width:auto;height:auto;"
           onerror="this.style.display='none'; document.querySelector('.logo-fallback').style.display='block';">
         <div class="logo-fallback">Padcare<span class="logo-dot"></span></div>
       </div>
@@ -1418,7 +1440,7 @@
   <div id="screen-profile" class="screen">
     <div class="col">
       <div class="logo-area">
-        <img src="logo.png" alt="Padcare Logo"
+        <img src="logo.png" alt="Padcare Logo" style="display:block;margin:0 auto;max-width:160px;max-height:56px;width:auto;height:auto;"
           onerror="this.style.display='none';">
         <div class="logo-fallback">Padcare<span class="logo-dot"></span></div>
       </div>
@@ -1497,7 +1519,7 @@
   <div id="screen-quiz" class="screen">
     <div class="col">
       <div class="logo-area">
-        <img src="logo.png" alt="Padcare Logo"
+        <img src="logo.png" alt="Padcare Logo" style="display:block;margin:0 auto;max-width:160px;max-height:56px;width:auto;height:auto;"
           onerror="this.style.display='none';">
         <div class="logo-fallback">Padcare<span class="logo-dot"></span></div>
       </div>
@@ -1573,7 +1595,7 @@
   <div id="screen-results" class="screen">
     <div class="col">
       <div class="logo-area">
-        <img src="logo.png" alt="Padcare Logo"
+        <img src="logo.png" alt="Padcare Logo" style="display:block;margin:0 auto;max-width:160px;max-height:56px;width:auto;height:auto;"
           onerror="this.style.display='none';">
         <div class="logo-fallback">Padcare<span class="logo-dot"></span></div>
       </div>
@@ -1659,7 +1681,7 @@
   <div id="screen-feedback" class="screen">
     <div class="col">
       <div class="logo-area">
-        <img src="logo.png" alt="Padcare Logo"
+        <img src="logo.png" alt="Padcare Logo" style="display:block;margin:0 auto;max-width:160px;max-height:56px;width:auto;height:auto;"
           onerror="this.style.display='none';">
         <div class="logo-fallback">Padcare<span class="logo-dot"></span></div>
       </div>
