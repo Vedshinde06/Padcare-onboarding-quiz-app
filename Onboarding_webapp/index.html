@@ -80,7 +80,7 @@
     .screen {
       display: none;
       min-height: 100vh;
-      padding: 32px 16px 80px;
+      padding: clamp(16px, 4vw, 32px) clamp(12px, 4vw, 16px) clamp(64px, 10vw, 80px);
       animation: screenIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
     .screen.active { display: block; }
@@ -101,18 +101,22 @@
     ============================================================ */
     .logo-area {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
+      padding: 0 8px;
     }
     .logo-area img {
-      max-height: 80px;
+      display: block;
+      margin: 0 auto;
+      max-height: clamp(44px, 11vw, 80px);
       width: auto;
+      max-width: 100%;
       object-fit: contain;
     }
     /* Fallback text logo if image fails */
     .logo-fallback {
       display: none;
       font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
+      font-size: clamp(1.3rem, 5vw, 1.8rem);
       font-weight: 900;
       color: var(--red);
       letter-spacing: -0.5px;
@@ -133,7 +137,7 @@
       background: var(--white);
       border-radius: var(--r);
       box-shadow: var(--card-shadow);
-      padding: 40px;
+      padding: clamp(22px, 6vw, 40px) clamp(18px, 5vw, 40px);
       position: relative;
       overflow: hidden;
     }
@@ -438,7 +442,7 @@
       background: var(--white);
       border-radius: var(--r);
       box-shadow: var(--card-shadow);
-      padding: 36px;
+      padding: clamp(20px, 5vw, 36px) clamp(16px, 5vw, 36px);
       position: relative;
       overflow: hidden;
       animation: qCardIn 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both;
@@ -1148,29 +1152,200 @@
     }
 
     /* ============================================================
-       RESPONSIVE
+       RESPONSIVE — COMPREHENSIVE MOBILE-FIRST COVERAGE
     ============================================================ */
-    @media (max-width: 640px) {
-      .screen    { padding: 20px 12px 64px; }
-      .card      { padding: 24px 18px; }
-      .q-card    { padding: 24px 18px; }
-      h1         { font-size: 1.55rem; }
-      h2         { font-size: 1.15rem; }
-      .lead      { font-size: 0.88rem; }
-      .btn       { padding: 14px 22px; font-size: 0.88rem; }
-      .hud       { gap: 10px; padding: 12px 14px; }
-      .hud-val   { font-size: 0.9rem; }
-      .badge-card { padding: 12px 7px; }
-      .badges-grid { gap: 7px; }
-      .admin-box { padding: 22px 16px; }
+
+    /* --- Tablet & below (≤768px) --- */
+    @media (max-width: 768px) {
+      .screen        { padding: 20px 14px 72px; }
+      .card          { padding: 28px 22px; }
+      .q-card        { padding: 26px 20px; }
+
+      .hud           { gap: 8px; padding: 12px 14px; flex-wrap: nowrap; }
+      .hud-item      { min-width: 0; }
+      .hud-label     { font-size: 0.55rem; }
+      .hud-val       { font-size: 0.92rem; }
+      .hud-icon      { font-size: 1.1rem; }
+      .hud-div       { height: 28px; }
+
+      .score-ring    { width: 120px; height: 120px; }
+      .score-inner   { width: 92px; height: 92px; }
+      .score-number  { font-size: 1.75rem; }
+      .score-label   { font-size: 0.58rem; }
+
+      .result-rating { padding: 16px 18px; gap: 12px; }
+      .result-rating-icon { font-size: 2rem; }
+      .result-rating-name { font-size: 1.05rem; }
+      .result-rating-sub  { font-size: 0.78rem; }
+
+      .cat-table th, .cat-table td { padding: 8px 10px; font-size: 0.78rem; }
+      .mini-bar-wrap { width: 44px; }
+
+      .badge-card    { padding: 12px 8px; }
+      .badge-icon-wrap { font-size: 1.75rem; }
+      .badge-name-sm { font-size: 0.65rem; }
+
+      .adm-table th, .adm-table td { padding: 9px 10px; font-size: 0.75rem; }
+      .admin-box     { padding: 24px 18px; }
+
+      .success-box   { padding: 32px 16px; }
+      .success-icon  { font-size: 2.6rem; }
+      .success-title { font-size: 1.3rem; }
+
+      .toggle-row    { gap: 8px; }
+      .toggle-btn    { padding: 10px 18px; font-size: 0.85rem; }
+
+      #musicToggle   { width: 40px; height: 40px; font-size: 1rem; top: 12px; right: 12px; }
+      /* Hide tooltip on touch screens */
+      #musicToggle::after { display: none; }
     }
 
-    @media (max-width: 380px) {
-      .card { padding: 18px 14px; }
-      .q-card { padding: 18px 14px; }
-      h1 { font-size: 1.35rem; }
-      .emo-grid { gap: 7px; }
-      .emo-btn  { font-size: 0.78rem; padding: 10px 5px; }
+    /* --- Mobile (≤640px) --- */
+    @media (max-width: 640px) {
+      .screen        { padding: 16px 12px 68px; }
+      .card          { padding: 22px 16px; border-radius: 14px; }
+      .q-card        { padding: 20px 16px; border-radius: 14px; }
+
+      h1             { font-size: clamp(1.35rem, 7vw, 1.6rem); }
+      h2             { font-size: clamp(1.05rem, 5vw, 1.25rem); }
+      .lead          { font-size: 0.86rem; margin-bottom: 20px; }
+      .eyebrow       { font-size: 0.6rem; letter-spacing: 2px; }
+
+      .btn           { padding: 13px 18px; font-size: 0.86rem; border-radius: 10px; }
+
+      /* Logo tighter on mobile */
+      .logo-area     { margin-bottom: 16px; }
+
+      /* HUD — shrink aggressively */
+      .hud           { padding: 10px 12px; gap: 6px; border-radius: 12px; }
+      .hud-icon      { font-size: 1rem; }
+      .hud-val       { font-size: 0.82rem; }
+      .hud-label     { font-size: 0.5rem; letter-spacing: 0.8px; }
+      .hud-div       { height: 22px; }
+
+      /* Progress */
+      .progress-wrap { margin-bottom: 14px; }
+      .progress-label, .progress-pct { font-size: 0.68rem; }
+
+      /* Question card */
+      .q-category    { font-size: 0.58rem; padding: 4px 10px; margin-bottom: 10px; }
+      .multi-hint    { font-size: 0.58rem; padding: 4px 10px; margin-bottom: 10px; }
+      .q-text        { font-size: clamp(0.88rem, 4vw, 1rem); margin-bottom: 18px; }
+
+      /* Options */
+      .opt           { padding: 11px 12px; gap: 10px; border-radius: 9px; }
+      .opt-key       { width: 26px; height: 26px; font-size: 0.65rem; border-radius: 7px; }
+      .opt-text      { font-size: 0.83rem; }
+      .opts-list     { gap: 8px; margin-bottom: 18px; }
+
+      /* Score ring */
+      .score-ring    { width: 110px; height: 110px; }
+      .score-inner   { width: 84px; height: 84px; }
+      .score-number  { font-size: 1.55rem; }
+      .score-label   { font-size: 0.55rem; }
+      .score-pct-txt { font-size: 0.82rem; }
+      .score-ring-wrap { margin: 4px 0 18px; }
+
+      /* Result rating card */
+      .result-rating { padding: 14px 16px; gap: 12px; border-radius: 12px; }
+      .result-rating-icon { font-size: 1.8rem; }
+      .result-rating-name { font-size: 0.95rem; }
+      .result-rating-sub  { font-size: 0.74rem; }
+
+      /* Badges */
+      .badges-section { margin: 14px 0; }
+      .badges-grid   { gap: 7px; }
+      .badge-card    { padding: 11px 6px; border-radius: 10px; }
+      .badge-icon-wrap { font-size: 1.6rem; margin-bottom: 6px; }
+      .badge-name-sm { font-size: 0.6rem; }
+
+      /* Category table */
+      .cat-table th  { padding: 7px 8px; font-size: 0.6rem; }
+      .cat-table td  { padding: 9px 8px; font-size: 0.75rem; }
+      .mini-bar-wrap { width: 36px; margin-left: 5px; }
+      .pill          { font-size: 0.63rem; padding: 2px 7px; }
+
+      /* Form */
+      .form-group    { margin-bottom: 16px; }
+      .form-field    { padding: 11px 13px; font-size: 0.88rem; }
+      .label-sm      { font-size: 0.62rem; margin-bottom: 6px; }
+      .err-msg       { font-size: 0.68rem; }
+
+      /* Emotion grid */
+      .emo-grid      { gap: 8px; }
+      .emo-btn       { padding: 10px 6px; font-size: 0.8rem; border-radius: 9px; }
+
+      /* Feedback */
+      .slider-row    { gap: 8px; }
+      .slider-val    { font-size: 1.1rem; }
+      .slider-end    { font-size: 0.7rem; }
+      .toggle-btn    { padding: 10px 16px; font-size: 0.82rem; border-radius: 9px; }
+
+      /* Success */
+      .success-box   { padding: 28px 14px; }
+      .success-icon  { font-size: 2.4rem; margin-bottom: 12px; }
+      .success-title { font-size: 1.2rem; }
+      .success-sub   { font-size: 0.84rem; }
+
+      /* Admin */
+      .admin-box     { padding: 18px 14px; border-radius: 16px; }
+      .admin-title   { font-size: 1.15rem; }
+      .adm-table th  { padding: 8px 8px; font-size: 0.58rem; }
+      .adm-table td  { padding: 9px 8px; font-size: 0.72rem; }
+
+      /* Nav dots */
+      .dots-nav      { gap: 5px; margin-top: 16px; }
+      .dot-item      { width: 6px; height: 6px; }
+
+      /* Mission chip on title */
+      .mission-chip  { font-size: 0.6rem; padding: 5px 12px; }
+
+      /* XP / Wrong pops — smaller on mobile */
+      #xpPop         { font-size: 1.2rem; padding: 10px 20px; border-radius: 12px; }
+      #wrongPop      { font-size: 1rem;   padding: 9px 18px;  border-radius: 12px; }
+
+      /* Music toggle */
+      #musicToggle   { width: 38px; height: 38px; font-size: 0.9rem; top: 10px; right: 10px; }
+    }
+
+    /* --- Small phones (≤390px) --- */
+    @media (max-width: 390px) {
+      .screen        { padding: 14px 10px 64px; }
+      .card          { padding: 18px 13px; }
+      .q-card        { padding: 16px 13px; }
+
+      h1             { font-size: 1.25rem; }
+      h2             { font-size: 1rem; }
+      .lead          { font-size: 0.82rem; }
+
+      .hud           { padding: 9px 10px; gap: 5px; }
+      .hud-icon      { font-size: 0.9rem; }
+      .hud-val       { font-size: 0.78rem; }
+      .hud-label     { font-size: 0.46rem; }
+      .hud-div       { height: 18px; }
+
+      .opt           { padding: 10px 10px; gap: 8px; }
+      .opt-key       { width: 24px; height: 24px; font-size: 0.6rem; }
+      .opt-text      { font-size: 0.78rem; }
+
+      .score-ring    { width: 96px; height: 96px; }
+      .score-inner   { width: 74px; height: 74px; }
+      .score-number  { font-size: 1.35rem; }
+
+      .badges-grid   { gap: 5px; }
+      .badge-card    { padding: 9px 4px; }
+      .badge-icon-wrap { font-size: 1.4rem; }
+      .badge-name-sm { font-size: 0.55rem; }
+
+      .emo-grid      { gap: 6px; }
+      .emo-btn       { font-size: 0.74rem; padding: 9px 4px; }
+
+      .result-rating { padding: 12px 13px; gap: 10px; }
+      .result-rating-icon { font-size: 1.6rem; }
+      .result-rating-name { font-size: 0.88rem; }
+      .result-rating-sub  { font-size: 0.7rem; }
+
+      .admin-box     { padding: 14px 10px; }
     }
   </style>
 </head>
