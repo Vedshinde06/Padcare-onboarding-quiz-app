@@ -1633,7 +1633,7 @@
 
         <!-- Confidence slider -->
         <div class="form-group">
-          <label class="label-sm">How confident do you feel after onboarding? (1–10)</label>
+          <label class="label-sm">How much would you rate the onboarding process? (1–10)</label>
           <div class="slider-row">
             <span class="slider-end">1</span>
             <input type="range" id="sl-confidence" min="1" max="10" value="5"
@@ -1643,19 +1643,10 @@
           </div>
         </div>
 
-        <!-- Clear toggle -->
-        <div class="form-group">
-          <label class="label-sm">Was the onboarding session clear and well-structured?</label>
-          <div class="toggle-row">
-            <button class="toggle-btn" data-val="Yes" onclick="pickClear(this)">✅ Yes</button>
-            <button class="toggle-btn" data-val="No"  onclick="pickClear(this)">❌ No</button>
-          </div>
-          <div class="err-msg" id="err-clear">Please select an option.</div>
-        </div>
 
         <!-- Suggestions -->
         <div class="form-group">
-          <label class="label-sm">Suggestions or improvements?</label>
+          <label class="label-sm">Suggestions for improvements?</label>
           <textarea id="f-suggestions" class="form-field"
             style="min-height:96px; resize:vertical;"
             placeholder="Share your thoughts, ideas, or anything we can improve…"></textarea>
@@ -2325,7 +2316,7 @@
     unlockBadges();
 
     // Confetti + applause for Culture Champion (90+ XP)
-    if (xp >= 90) {
+    if (xp >= 75) {
       launchConfetti();
       setTimeout(() => playSound('applauseSound'), 400);
     }
