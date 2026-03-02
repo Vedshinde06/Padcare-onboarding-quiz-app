@@ -499,6 +499,21 @@
     }
     .correct-glow { animation: correctGlow 0.8s ease; }
 
+    .q-category {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(201,22,26,0.08);
+      color: var(--red);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 99px;
+      margin-bottom: 14px;
+    }
+
     .multi-hint {
       display: inline-flex;
       align-items: center;
@@ -780,6 +795,26 @@
     .level-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; }
     .level-sub { font-size: 0.82rem; opacity: 0.8; margin-top: 2px; }
 
+    /* ============================================================
+       CATEGORY TABLE
+    ============================================================ */
+    .cat-table { width: 100%; border-collapse: collapse; }
+    .cat-table th {
+      text-align: left;
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--gray-text);
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--gray-line);
+    }
+    .cat-table td {
+      padding: 11px 12px;
+      font-size: 0.82rem;
+      border-bottom: 1px solid rgba(207,207,207,0.3);
+    }
+
     .pill {
       display: inline-block;
       padding: 3px 10px;
@@ -790,6 +825,9 @@
     .pill-green  { background: rgba(14,75,7,0.10);    color: var(--green); }
     .pill-yellow { background: rgba(239,193,71,0.2);  color: #7a5500; }
     .pill-red    { background: rgba(201,22,26,0.10);  color: var(--red); }
+
+    .mini-bar-wrap { display: inline-block; vertical-align: middle; margin-left: 8px; width: 60px; height: 5px; background: rgba(207,207,207,0.4); border-radius: 99px; overflow: hidden; }
+    .mini-bar-fill { height: 100%; background: var(--red); border-radius: 99px; }
 
     /* ============================================================
        FEEDBACK SCREEN
@@ -1161,6 +1199,9 @@
       .result-rating-name { font-size: 1.05rem; }
       .result-rating-sub  { font-size: 0.78rem; }
 
+      .cat-table th, .cat-table td { padding: 8px 10px; font-size: 0.78rem; }
+      .mini-bar-wrap { width: 44px; }
+
       .badge-card    { padding: 12px 8px; }
       .badge-icon-wrap { font-size: 1.75rem; }
       .badge-name-sm { font-size: 0.65rem; }
@@ -1414,12 +1455,14 @@
           <label class="label-sm" for="p-dept">Department</label>
           <select id="p-dept" class="form-field">
             <option value="" disabled selected>Select your department</option>
-            <option>HR</option>
+            <option>HR and Administration</option>
             <option>Sales</option>
             <option>Operations</option>
             <option>R&D</option>
-            <option>Finance</option>
-            <option>Other</option>
+            <option>Finance and legal</option>
+            <option>CSR</option>
+            <option>Customer Success</option>
+            <option>Founder's Office</option>
           </select>
           <div class="err-msg" id="err-dept">Please select your department.</div>
         </div>
@@ -1522,6 +1565,7 @@
 
       <!-- Question card -->
       <div class="q-card" id="qCard">
+        <div class="q-category" id="q-cat"></div>
         <span class="multi-hint" id="multi-hint" style="display:none;">Select all that apply</span>
         <div class="q-text" id="q-text">Loading question…</div>
         <ul class="opts-list" id="q-opts"></ul>
@@ -1594,6 +1638,21 @@
             </div>
           </div>
         </div>
+
+        <hr>
+
+        <!-- Category breakdown -->
+        <p class="eyebrow" style="margin-bottom:12px;">Category Performance</p>
+        <table class="cat-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Score</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody id="catTableBody"></tbody>
+        </table>
 
         <hr>
         <button class="btn btn-gold" onclick="showScreen('screen-feedback')">
@@ -1729,8 +1788,8 @@
         "800 years",
         "1000 years"
       ],
-      correctIndex: 2,
-      category: "Environment & Impact"
+      correctIndex: 2
+  
     },
     {
       // Multi-select question (correctIndex is array)
@@ -1741,8 +1800,8 @@
         "PadcareX",
         "Padcare Pads"
       ],
-      correctIndex: [0, 1, 2],
-      category: "Products & Portfolio"
+      correctIndex: [0, 1, 2]
+    
     },
     {
       question: "What are the core values of Padcare?",
@@ -1752,19 +1811,17 @@
         "Market Leadership, Revenue Focus, Expansion, Control, and Strategy",
         "Teamwork, Commitment, Compliance, Security, and Stability"
       ],
-      correctIndex: 1,
-      category: "Company Values"
+      correctIndex: 1
     },
     {
-      question: "In how many cities does padcare provides its services",
+      question: "In how many cities does padcare provides its services?",
       options: [
         "10 cities",
         "15 cities",
         "25 cities",
         "40+ cities"
       ],
-      correctIndex: 2,
-      category: "Company Overview"
+      correctIndex: 2
     },
     {
       // 5D Technology — full explanation included
@@ -1775,8 +1832,7 @@
         "Dehydration, Disassembly, Deodorization, Dispersal, and Denaturin",
         "Detection, Deactivation, Degradation, Disinfection, and Drying"
       ],
-      correctIndex: 0,
-      category: "5D Technology"
+      correctIndex: 0
     },
     {
       question: "What is the official check-in time for all Padcare employees?",
@@ -1786,8 +1842,7 @@
         "10:00 AM",
         "Flexible — no fixed check-in time"
       ],
-      correctIndex: 1,
-      category: "Attendance Policy"
+      correctIndex: 1
     },
     {
       // POSH question — confusing options as required
@@ -1798,9 +1853,8 @@
         "Complaints must be made within 1 year of the incident for the Internal Committee to take cognisance",
         "POSH applies only to incidents that occur inside office premises during working hours"
       ],
-      correctIndex: [0, 2],
-      category: "POSH Policy"
-    },
+      correctIndex: [0, 2]
+      },
     {
       question: "Where can employees access Padcare's official HR policies, leave rules, and compliance documents?",
       options: [
@@ -1809,8 +1863,7 @@
         "WhatsApp group",
         "Physical policy handbook"
       ],
-      correctIndex: 1,
-      category: "HR Systems"
+      correctIndex: 1
     },
     {
       question: "What is Padcare's official task management and team collaboration tool?",
@@ -1820,19 +1873,17 @@
         "ETMS",
         "Asana"
       ],
-      correctIndex: 2,
-      category: "Tools & Processes"
+      correctIndex: 2
     },
     {
-      question: "What is Rebirth",
+      question: "What is Rebirth?",
       options: [
         "Sub-brand focused on circular and recycled product solutions, promoting sustainability through innovation",
         "An employee wellness and mental health initiative launched internally",
         "Padcare’s international expansion program for new global markets",
         "A short-term marketing campaign promoting menstrual awareness"
       ],
-      correctIndex: 0,
-      category: "Rebirth Brand"
+      correctIndex: 0
     }
   ];
 
@@ -1987,6 +2038,7 @@
     document.getElementById('progress-pct').textContent   = pct + '%';
 
     // Category & multi-hint
+    document.getElementById('q-cat').textContent = q.category;
     document.getElementById('q-text').textContent = q.question;
     const multiHint = document.getElementById('multi-hint');
     multiHint.style.display = isMultiSelect(q) ? 'inline-flex' : 'none';
@@ -2320,6 +2372,28 @@
 
     // Badges
     unlockBadges();
+
+    // Category table
+    const cats = {};
+    game.answers.forEach(a => {
+      if (!cats[a.cat]) cats[a.cat] = { c: 0, t: 0 };
+      cats[a.cat].t++;
+      if (a.correct) cats[a.cat].c++;
+    });
+
+    const tbody = document.getElementById('catTableBody');
+    tbody.innerHTML = '';
+    Object.entries(cats).forEach(([cat, d]) => {
+      const pct  = Math.round((d.c / d.t) * 100);
+      const pill = pct >= 75 ? 'pill-green' : pct >= 50 ? 'pill-yellow' : 'pill-red';
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        `<td>${cat}</td>` +
+        `<td>${d.c}/${d.t}</td>` +
+        `<td><span class="pill ${pill}">${pct}%</span>` +
+        `<span class="mini-bar-wrap"><span class="mini-bar-fill" style="width:${pct}%"></span></span></td>`;
+      tbody.appendChild(tr);
+    });
 
     // Confetti + applause for Culture Champion (90+ XP)
     if (xp >= 90) {
