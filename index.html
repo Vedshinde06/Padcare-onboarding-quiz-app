@@ -1601,7 +1601,8 @@
 
         <hr>
         <button class="btn btn-gold" onclick="showScreen('screen-feedback')">
-              Next        </button>
+          Next
+        </button>
       </div>
 
       <div class="dots-nav">
@@ -1633,7 +1634,7 @@
 
         <!-- Confidence slider -->
         <div class="form-group">
-          <label class="label-sm">How much would you rate the onboarding process? (1–10)</label>
+          <label class="label-sm">ow much would you rate the onboarding process? (1–10)</label>
           <div class="slider-row">
             <span class="slider-end">1</span>
             <input type="range" id="sl-confidence" min="1" max="10" value="5"
@@ -1642,7 +1643,6 @@
             <div class="slider-val" id="sl-val">5</div>
           </div>
         </div>
-
 
         <!-- Suggestions -->
         <div class="form-group">
@@ -2316,7 +2316,7 @@
     unlockBadges();
 
     // Confetti + applause for Culture Champion (90+ XP)
-    if (xp >= 75) {
+    if (xp >= 90) {
       launchConfetti();
       setTimeout(() => playSound('applauseSound'), 400);
     }
@@ -2353,7 +2353,7 @@
      FEEDBACK SUBMIT
   ============================================================ */
   async function submitFeedback() {
-
+    // Capture all values FIRST before any async call
     feedback.confidence  = parseInt(document.getElementById('sl-confidence').value);
     feedback.suggestions = document.getElementById('f-suggestions').value.trim();
     feedback.timestamp   = new Date().toISOString();
@@ -2369,25 +2369,16 @@
     await submitToSheets();
 
     // Save to session
-    const badgesArr = Object.entries(game.badges)
-      .filter(([, v]) => v)
-      .map(([k]) => k);
-
     const payload = {
-      name:         player.name,
-      department:   player.dept,
-      role:         player.role,
-      doj:          player.doj,
-      emotion:      player.emotion,
-      xp:           game.xp,
-      level:        getLevel(game.xp).name,
-      percentage:   game.xp,
-      streak:       game.maxStreak,
-      badges:       badgesArr.join(', '),
-      confidence:   feedback.confidence,
-      clear:        feedback.clear,
-      suggestions:  feedback.suggestions,
-      timestamp:    feedback.timestamp
+      name:        player.name,
+      department:  player.dept,
+      role:        player.role,
+      doj:         player.doj,
+      emotion:     player.emotion,
+      score:       game.xp,
+      confidence:  feedback.confidence,
+      suggestions: feedback.suggestions,
+      timestamp:   feedback.timestamp
     };
     sessionStorage.setItem('padcare_session', JSON.stringify(payload));
 
@@ -2401,29 +2392,20 @@
   ============================================================ */
   async function submitToSheets() {
     try {
-      const badgesArr = Object.entries(game.badges)
-        .filter(([, v]) => v)
-        .map(([k]) => k);
-
       await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         mode:   'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name:         player.name,
-          department:   player.dept,
-          role:         player.role,
-          doj:          player.doj,
-          emotion:      player.emotion,
-          xp:           game.xp,
-          level:        getLevel(game.xp).name,
-          percentage:   game.xp,
-          streak:       game.maxStreak,
-          badges:       badgesArr.join(', '),
-          confidence:   feedback.confidence,
-          onboardingClear: feedback.clear,
-          suggestions:  feedback.suggestions,
-          timestamp:    feedback.timestamp
+          timestamp:   feedback.timestamp,
+          name:        player.name,
+          department:  player.dept,
+          role:        player.role,
+          doj:         player.doj,
+          emotion:     player.emotion,
+          score:       game.xp,
+          confidence:  feedback.confidence,
+          suggestions: feedback.suggestions
         })
       });
     } catch (err) {
