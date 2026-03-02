@@ -1707,7 +1707,7 @@
   /* ============================================================
      CONFIGURATION
   ============================================================ */
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwI0y7hkYInBGLiE3ngLtTDUls0fpc7ZWgahEnNXJMWULXtJIWZQSSWH9dkJ229b3Kfng/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgaGgUIyKknv1EwLwaXSiivj9GLzdd36dYopbF5jweefgC_jMs_y4HgVTbrs_ixsjKig/exec";
 
   /* ============================================================
      QUIZ QUESTIONS
@@ -2353,13 +2353,8 @@
      FEEDBACK SUBMIT
   ============================================================ */
   async function submitFeedback() {
-    if (!clearChoice) {
-      document.getElementById('err-clear').classList.add('show');
-      return;
-    }
 
     feedback.confidence  = parseInt(document.getElementById('sl-confidence').value);
-    feedback.clear       = clearChoice;
     feedback.suggestions = document.getElementById('f-suggestions').value.trim();
     feedback.timestamp   = new Date().toISOString();
 
