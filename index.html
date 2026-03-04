@@ -1438,7 +1438,7 @@
         <!-- Date of Joining -->
         <div class="form-group">
           <label class="label-sm" for="p-doj">Date of Joining</label>
-          <input type="date" id="p-doj" class="form-field">
+          <input type="date" id="p-doj" class="form-field" max>
           <div class="err-msg" id="err-doj">Please select your joining date.</div>
         </div>
 
@@ -1784,16 +1784,15 @@
       category: "Attendance Policy"
     },
     {
-      // POSH question — confusing options as required
-      question: "Under Padcare's POSH (Prevention of Sexual Harassment) policy, which of the following statements is correct?",
+    
+      question: "Does Padcare have a Talent Development Policy?",
       options: [
-        "POSH is applicable only to female employees; male employees cannot file a complaint",
-        "Complaints must be filed within 30 days of the incident, after which the case is automatically dismissed",
-        "Complaints must be made within 1 year of the incident for the Internal Committee to take cognisance",
-        "POSH applies only to incidents that occur inside office premises during working hours"
+        "Yes",
+        "No",
+        "Not Sure"
       ],
-      correctIndex: [0, 2],
-      category: "POSH Policy"
+      correctIndex: [0],
+      category: "Talent Development"
     },
     {
       question: "Where can employees access Padcare's official HR policies, leave rules, and compliance documents?",
@@ -1890,6 +1889,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  document.getElementById('p-doj').max = new Date().toISOString().split('T')[0];
   /* ============================================================
      EMOTION PICKER
   ============================================================ */
@@ -1983,12 +1983,11 @@
     // Category & multi-hint
     document.getElementById('q-text').textContent = q.question;
     const multiHint = document.getElementById('multi-hint');
-    multiHint.style.display = isMultiSelect(q) ? 'inline-flex' : 'none';
-
+    multiHint.style.display = (isMultiSelect(q) && q.options.length > 3) ? 'inline-flex' : 'none';
     // Build options
     const ul = document.getElementById('q-opts');
     ul.innerHTML = '';
-    ['A', 'B', 'C', 'D'].forEach((ltr, i) => {
+    ['A', 'B', 'C', 'D'].slice(0, q.options.length).forEach((ltr, i) => {
       const li = document.createElement('li');
       li.className = 'opt';
       li.dataset.idx = i;
@@ -2188,10 +2187,10 @@
 
     // Score multi-select when Next is pressed
     if (isMultiSelect(q) && !game.answered) {
-      lockAndScoreMulti();
-      setTimeout(() => advanceQuestion(), 900);
-      return;
-    }
+        lockAndScoreMulti();
+        document.getElementById('btn-next').disabled = false;
+        return;
+        }
 
     advanceQuestion();
   }
